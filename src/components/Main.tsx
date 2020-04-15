@@ -4,7 +4,7 @@ export default function Main() {
 
     return (
         <h1>
-            Главная страница
+            Компонент - Главная страница
         </h1>
     );
 }

@@ -1,0 +1,40 @@
+.auth_main_container {
+  width: 500px;
+  max-width: calc(100vmin - 8px);
+  height: 500px;
+  max-height: calc(100vmin - 8px);
+  border-radius: 50%;
+  border: 4px solid blue;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  overflow: hidden;
+}
+
+.auth_text_fields_container {
+  width: 80%;
+  margin: 20px 0 50px 0;
+}
+
+.auth_text_fields {
+  width: 100%;
+  margin-bottom: 10px !important;
+}
+
+.auth_text_typography {
+  width: max-content;
+}
+
+.auth_button {
+  width: 100%;
+  padding: 15px 0 15px 0 !important;
+}
+
+.auth_button_icon {
+  margin-right: 10px;
+}

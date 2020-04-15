@@ -75,7 +75,19 @@ export default function Navigation() {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="h6" noWrap>
-                            Mini variant drawer
+                            <Switch>
+                                {Routes.map((route, index) => (
+                                    <Route
+                                        key={"keyToolbarInfoTitle"+route.title}
+                                        exact={true}
+                                        path={route.path}
+                                    >
+                                        <Typography variant="h4">
+                                            {route.title}
+                                        </Typography>
+                                    </Route>
+                                ))}
+                            </Switch>
                         </Typography>
                     </Toolbar>
                 </AppBar>

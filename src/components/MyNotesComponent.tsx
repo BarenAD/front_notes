@@ -10,7 +10,7 @@ export default class MyNotesComponent extends React.Component
     render() {
         return (
             <h1>
-                Мои заметки
+                Компонент - Мои заметки
             </h1>
         );
     }
