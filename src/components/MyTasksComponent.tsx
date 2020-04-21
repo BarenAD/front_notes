@@ -1,6 +1,7 @@
 import React from 'react';
+import TasksStore from "../store/TasksStore";
 
-export default class MyNotesComponent extends React.Component
+export default class MyTasksComponent extends React.Component
 {
     constructor(props: any)
     {
@@ -8,6 +9,7 @@ export default class MyNotesComponent extends React.Component
     }
 
     render() {
+        const {tasks} = TasksStore;
         return (
             <h1>
                 Компонент - Мои заметки

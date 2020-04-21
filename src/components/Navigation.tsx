@@ -18,7 +18,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import {BrowserRouter as Router, Switch, Route, Link, useRouteMatch} from "react-router-dom";
 import {HomeOutlined, EventNoteOutlined, ExitToAppOutlined} from "@material-ui/icons";
 import Main from "./Main";
-import MyNotesComponent from "./MyNotesComponent";
+import MyTasksComponent from "./MyTasksComponent";
+import {logoutUser} from "../scripts/UsersModel";
 
 const drawerWidth = 240;
 
@@ -31,8 +32,8 @@ const Routes: typeRoute[] = [
         icon: <HomeOutlined/>
     },
     {
-        path: "/myNotes",
-        component: <MyNotesComponent/>,
+        path: "/myTasks",
+        component: <MyTasksComponent/>,
         title: "Мои заметки",
         exact: true,
         icon: <EventNoteOutlined/>
@@ -126,7 +127,11 @@ export default function Navigation() {
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button key={"keyLogoutButton"}>
+                        <ListItem
+                            button
+                            key={"keyLogoutButton"}
+                            onClick={() => {logoutUser()}}
+                        >
                             <ListItemIcon>
                                 <ExitToAppOutlined />
                             </ListItemIcon>
