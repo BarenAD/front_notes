@@ -10,7 +10,7 @@ export function addTask(inText: string): boolean {
     let currentTime = new Date().getTime();
     let newId: number = currentTime;
     let rand: number = Math.floor(Math.random() * 10000);
-    for(; rand > 0; rand /= 10) {
+    for(; rand > 0; rand = Math.floor(rand / 10)) {
         newId *= 10;
         newId += rand % 10;
     }
@@ -23,7 +23,7 @@ export function addTask(inText: string): boolean {
     };
     let tasks: any = _getDataFromLStorage(STORAGE_KEY_TASKS);
     if (Array.isArray(tasks[user])) {
-        tasks[user].push(newTask);
+        tasks[user].unshift(newTask);
     } else {
         tasks[user] = [newTask];
     }

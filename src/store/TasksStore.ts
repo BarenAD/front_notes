@@ -5,19 +5,24 @@ import {getTasks} from "../scripts/TasksModel";
 class TasksStore
 {
     tasks: I_TASK[];
-    constructor(inTasks: I_TASK[]) {
-        this.tasks = inTasks;
+    constructor() {
+        this.tasks = [];
+    }
+
+    updateTasks() {
+        this.tasks = getTasks();
     }
 
     addTasks(inTask: I_TASK): void {
-        this.tasks.push(inTask);
+        this.tasks.unshift(inTask);
     }
 }
 
 // @ts-ignore
 TasksStore = decorate(TasksStore, {
     tasks: observable,
-    addTasks: action
+    addTasks: action,
+    getTasks: action
 });
 
-export default new TasksStore(getTasks());
+export default new TasksStore();

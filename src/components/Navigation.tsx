@@ -83,7 +83,7 @@ export default function Navigation() {
                                         exact={true}
                                         path={route.path}
                                     >
-                                        <Typography variant="h4">
+                                        <Typography variant="body1">
                                             {route.title}
                                         </Typography>
                                     </Route>
