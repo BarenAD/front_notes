@@ -1,7 +1,7 @@
 import React from 'react';
-import {  Button, TextField, Typography } from '@material-ui/core';
+import {  Button, IconButton, TextField, Typography } from '@material-ui/core';
 import TasksStore from "../store/TasksStore";
-import {addTask} from "../scripts/TasksModel";
+import {addTask, updateTasks, deleteTask} from "../scripts/TasksModel";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,6 +10,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import {observer} from "mobx-react";
+import {Block, Delete, Create, NoteAdd} from "@material-ui/icons";
 
 interface IProps {
 }
@@ -29,7 +30,7 @@ class MyTasksComponent extends React.Component<IProps, IState>
     }
 
     componentDidMount(): void {
-        TasksStore.updateTasks();
+        updateTasks();
     }
 
     handleCreateNewTask()
@@ -48,7 +49,7 @@ class MyTasksComponent extends React.Component<IProps, IState>
                         <TableRow>
                             <TableCell>Заметка</TableCell>
                             <TableCell align="right">Дата создания</TableCell>
-                            <TableCell align="right">Действия</TableCell>
+                            <TableCell align="center">Действия</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -62,23 +63,44 @@ class MyTasksComponent extends React.Component<IProps, IState>
                                 />
                             </TableCell>
                             <TableCell align="right"></TableCell>
-                            <TableCell align="right">
-                                <Button
+                            <TableCell align="center">
+                                <IconButton
+                                    title={"создать новую"}
                                     onClick={() => {this.handleCreateNewTask()}}
                                 >
-                                    Создать
-                                </Button>
+                                    <NoteAdd/>
+                                </IconButton>
                             </TableCell>
                         </TableRow>
                         {tasks.map((task) => (
                             <TableRow
                                 key={"TasksListID_" + task.id}
+                                style={{backgroundColor: task.blocked === 0 ? "none" : "rgba(255,231,0,0.5)"}}
                             >
                                 <TableCell component="th" scope="row">
                                     {task.text}
                                 </TableCell>
                                 <TableCell align="right">{new Date(task.dateCreate).toUTCString()}</TableCell>
-                                <TableCell align="right">удалить</TableCell>
+                                <TableCell align="center">
+                                    {task.blocked === 0 ?
+                                        <div>
+                                            <IconButton
+                                                title={"редактировать"}
+                                                onClick={() => {}}
+                                            >
+                                                <Create/>
+                                            </IconButton>
+                                            <IconButton
+                                                title={"удалить"}
+                                                onClick={() => {deleteTask(task.id)}}
+                                            >
+                                                <Delete/>
+                                            </IconButton>
+                                        </div>
+                                        :
+                                        <Block/>
+                                    }
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

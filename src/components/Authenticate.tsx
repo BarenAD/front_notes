@@ -47,13 +47,7 @@ export default class Authenticate extends  React.Component<IProps, IState>
         loginUser({
             login: this.state.login,
             password: this.state.password
-        })
-            .then(value => {
-                if (value.type === "success") {
-                    //редирект на главную страницу
-                }
-            })
-            .catch(reason => {
+        }).catch(reason => {
                 if (reason.type === "login") {
                     this.setState({
                         errorLogin: true,

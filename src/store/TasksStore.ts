@@ -1,6 +1,5 @@
 import {action, decorate, observable} from "mobx";
 import {I_TASK} from "../interfaces/TasksInterfaces";
-import {getTasks} from "../scripts/TasksModel";
 
 class TasksStore
 {
@@ -9,12 +8,18 @@ class TasksStore
         this.tasks = [];
     }
 
-    updateTasks() {
-        this.tasks = getTasks();
+    setTasks(payload: I_TASK[]) {
+        this.tasks = payload;
     }
 
     addTasks(inTask: I_TASK): void {
-        this.tasks.unshift(inTask);
+        let newTasks = this.tasks;
+        newTasks.unshift(inTask);
+        this.setTasks(newTasks);
+    }
+
+    deleteTask(inId: number): void {
+        this.setTasks(this.tasks.filter(task => (task.id !== inId || task.blocked > 0)));
     }
 }
 
@@ -22,7 +27,8 @@ class TasksStore
 TasksStore = decorate(TasksStore, {
     tasks: observable,
     addTasks: action,
-    getTasks: action
+    getTasks: action,
+    deleteTask: action
 });
 
 export default new TasksStore();
