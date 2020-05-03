@@ -74,7 +74,6 @@ export function startChangeTask(taskId: number): Promise<void> {
 }
 
 export function changeTask(taskId: number, text: string): Promise<void> {
-    console.log(taskId);
     return new Promise<void>((resolve, reject) => {
         let preparedBody: object = {
             body: text,
