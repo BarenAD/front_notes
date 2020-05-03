@@ -1,4 +1,4 @@
-import {action, computed, decorate, observable} from "mobx";
+import {action, decorate, observable} from "mobx";
 import {checkExistTokenAuth, getUserNameFromLocalStorage} from "../scripts/Models/AuthorizationModel";
 
 class UserStore

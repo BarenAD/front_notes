@@ -10,15 +10,20 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import {observer} from "mobx-react";
-import {Block, Delete, Create, NoteAdd} from "@material-ui/icons";
+import {Block, Delete, Create, NoteAdd, Done, Schedule} from "@material-ui/icons";
 import {I_TASK} from "../interfaces/TasksInterfaces";
+import Modal from "@material-ui/core/Modal";
+import ChangeTaskComponent from "./ChangeTaskComponent";
 
 interface IProps {
 }
 
 interface IState {
-    currentTextForNewTask: string
+    currentTextForNewTask: string;
     errorStatusCreatedTask: boolean;
+    modalIsOpen: boolean;
+    selectedChangeTaskId: number;
+    selectedChangeTaskText: string;
 }
 
 class MyTasksComponent extends React.Component<IProps, IState>
@@ -28,7 +33,10 @@ class MyTasksComponent extends React.Component<IProps, IState>
         super(props);
         this.state = {
             currentTextForNewTask: "",
-            errorStatusCreatedTask: false
+            errorStatusCreatedTask: false,
+            modalIsOpen: false,
+            selectedChangeTaskId: -1,
+            selectedChangeTaskText: ""
         };
     }
 
@@ -48,73 +56,111 @@ class MyTasksComponent extends React.Component<IProps, IState>
             });
     }
 
+    handleStartChangeTask(idTask: number)
+    {
+        let task: I_TASK | undefined = TasksStore.getTaskById(idTask);
+        if (task) {
+            this.setState({
+                selectedChangeTaskId: idTask,
+                selectedChangeTaskText: task.text
+            }, () => {
+                this.setState({modalIsOpen: true});
+            });
+        }
+    }
+
+    handleStopChangeTask()
+    {
+        this.setState({modalIsOpen: false});
+    }
+
     render()
     {
         const {tasks} = TasksStore;
         return (
-            <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Заметка</TableCell>
-                            <TableCell align="right">Дата создания</TableCell>
-                            <TableCell align="center">Действия</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        <TableRow style={{backgroundColor: this.state.errorStatusCreatedTask ? "gold" : "none"}}>
-                            <TableCell component="th" scope="row">
-                                <TextField
-                                    style={{width: "100%"}}
-                                    label="текст"
-                                    value={this.state.currentTextForNewTask}
-                                    onChange={(event) => {this.setState({currentTextForNewTask: event.target.value});}}
-                                />
-                            </TableCell>
-                            <TableCell align="right"></TableCell>
-                            <TableCell align="center">
-                                <IconButton
-                                    title={"создать новую"}
-                                    onClick={() => {this.handleCreateNewTask()}}
-                                >
-                                    <NoteAdd/>
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                        {tasks.map((task: I_TASK) => (
-                            <TableRow
-                                key={"TasksListID_" + task.id}
-                                style={{backgroundColor: task.blocked === 0 ? "none" : "rgba(255,231,0,0.5)"}}
-                            >
+            <div style={{width: "100%", height:"100%"}}>
+                <Modal
+                    open={this.state.modalIsOpen}
+                    onClose={() => {this.handleStopChangeTask()}}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                >
+                    <ChangeTaskComponent
+                        idTask={this.state.selectedChangeTaskId}
+                        textTask={this.state.selectedChangeTaskText}
+                        handleCloseModal={() => {this.handleStopChangeTask()}}
+                    />
+                </Modal>
+                <TableContainer component={Paper}>
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Заметка</TableCell>
+                                <TableCell align="right">Дата создания</TableCell>
+                                <TableCell align="center">Действия</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow style={{backgroundColor: this.state.errorStatusCreatedTask ? "gold" : "none"}}>
                                 <TableCell component="th" scope="row">
-                                    {task.text}
+                                    <TextField
+                                        style={{width: "100%"}}
+                                        label="текст"
+                                        value={this.state.currentTextForNewTask}
+                                        onChange={(event) => {this.setState({currentTextForNewTask: event.target.value});}}
+                                    />
                                 </TableCell>
-                                <TableCell align="right">{new Date(task.dateCreate).toUTCString()}</TableCell>
+                                <TableCell align="right"></TableCell>
                                 <TableCell align="center">
-                                    {task.blocked === 0 ?
-                                        <div>
-                                            <IconButton
-                                                title={"редактировать"}
-                                                onClick={() => {}}
-                                            >
-                                                <Create/>
-                                            </IconButton>
-                                            <IconButton
-                                                title={"удалить"}
-                                                onClick={() => {deleteTask(task.id)}}
-                                            >
-                                                <Delete/>
-                                            </IconButton>
-                                        </div>
-                                        :
-                                        <Block/>
-                                    }
+                                    <IconButton
+                                        title={"создать новую"}
+                                        onClick={() => {this.handleCreateNewTask()}}
+                                    >
+                                        <NoteAdd/>
+                                    </IconButton>
                                 </TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                            {tasks.map((task: I_TASK) => (
+                                <TableRow
+                                    key={"TasksListID_" + task.id}
+                                    style={{backgroundColor: task.blocked === 0 ? "none" : "rgba(255,231,0,0.5)"}}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        {task.text}
+                                    </TableCell>
+                                    <TableCell align="right">{new Date(task.dateCreate).toUTCString()}</TableCell>
+                                    <TableCell align="center">
+                                        {task.blocked === 0 ?
+                                            <div>
+                                                <IconButton
+                                                    title={"выполнена"}
+                                                    onClick={() => {}}
+                                                >
+                                                    <Done/>
+                                                </IconButton>
+                                                <IconButton
+                                                    title={"редактировать"}
+                                                    onClick={() => {this.handleStartChangeTask(task.id)}}
+                                                >
+                                                    <Create/>
+                                                </IconButton>
+                                                <IconButton
+                                                    title={"удалить"}
+                                                    onClick={() => {deleteTask(task.id)}}
+                                                >
+                                                    <Delete/>
+                                                </IconButton>
+                                            </div>
+                                            :
+                                            <Block/>
+                                        }
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
         );
     }
 }

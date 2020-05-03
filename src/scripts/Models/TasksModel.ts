@@ -7,6 +7,29 @@ export function updateTasks() {
     getAllTasks().then(tasks => {TasksStore.setTasks(tasks)});
 }
 
+export function changeTask(taskId: number, text: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        let preparedBody: object = {
+            body: text,
+            id: taskId
+        };
+        sendHTTPRequest({
+            method: "POST",
+            url: BACKEND_DOMAIN_URL + "/api/note/change/change",
+            data: preparedBody
+        })
+            .then(response => {
+                let task: I_TASK = prepareTask(response.data);
+                TasksStore.updateTask(task);
+                resolve();
+            })
+            .catch(response => {
+                reject();
+                console.log("Ошибка создания задачи");
+            });
+    });
+}
+
 export function createTask(text: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         let preparedBody: object = {
