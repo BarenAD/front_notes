@@ -6,6 +6,7 @@ import {I_LOGIN, I_REGISTRATION, I_STATUS_AUTHORIZATION, I_TYPES_TOKENS_TO_RETUR
 import {sendHTTPRequest} from "./HTTPWorker";
 import { BACKEND_DOMAIN_URL } from "../../constants/BasicConstants";
 import UserStore from "../../store/UserStore";
+import {setUserInfoForLocalStorage} from "./LocalStorageModel";
 
 export function checkExistTokenAuth(): boolean {
     return (
@@ -55,14 +56,16 @@ export function registerUser(inData: I_REGISTRATION): Promise<I_STATUS_AUTHORIZA
             data: preparedBody
         })
             .then(response => {
-                UserStore.setAuth(true, (inData.first_name + " " + inData.last_name));
-                localStorage.setItem(KEY_LOCAL_STORAGE_USER_NAME, (inData.first_name + " " + inData.last_name));
-                localStorage.setItem(KEY_LOCAL_STORAGE_AUTHORIZATION_ACCESS_TOKEN, response.data.access_token);
-                localStorage.setItem(KEY_LOCAL_STORAGE_AUTHORIZATION_REFRESH_TOKEN, response.data.refresh_token);
+                setUserInfoForLocalStorage({
+                    username: (response.data.first_name + " " + response.data.last_name),
+                    access: response.data.access_token,
+                    refresh: response.data.refresh_token
+                });
                 resolve({
                     type: "success",
                     message: "success"
                 });
+                UserStore.setAuth(true, (inData.first_name + " " + inData.last_name));
             })
             .catch(response => {
                 if (response.code === 409) {
@@ -89,14 +92,16 @@ export function loginUser(inData: I_LOGIN): Promise<I_STATUS_AUTHORIZATION> {
             data: preparedBody
         })
             .then(response => {
-                UserStore.setAuth(true, (response.data.first_name + " " + response.data.last_name));
-                localStorage.setItem(KEY_LOCAL_STORAGE_USER_NAME, (response.data.first_name + " " + response.data.last_name));
-                localStorage.setItem(KEY_LOCAL_STORAGE_AUTHORIZATION_ACCESS_TOKEN, response.data.access_token);
-                localStorage.setItem(KEY_LOCAL_STORAGE_AUTHORIZATION_REFRESH_TOKEN, response.data.refresh_token);
+                setUserInfoForLocalStorage({
+                    username: (response.data.first_name + " " + response.data.last_name),
+                    access: response.data.access_token,
+                    refresh: response.data.refresh_token
+                });
                 resolve({
                     type: "success",
                     message: "success"
                 });
+                UserStore.setAuth(true, (response.data.first_name + " " + response.data.last_name));
             })
             .catch(response => {
                 if (response.code === 404) {

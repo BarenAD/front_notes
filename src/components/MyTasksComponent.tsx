@@ -1,7 +1,7 @@
 import React from 'react';
 import {  Button, IconButton, TextField, Typography } from '@material-ui/core';
 import TasksStore from "../store/TasksStore";
-import {addTask, updateTasks, deleteTask} from "../scripts/Models/Offline/OfTasksModel";
+import {createTask, updateTasks, deleteTask} from "../scripts/Models/TasksModel";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,12 +11,14 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import {observer} from "mobx-react";
 import {Block, Delete, Create, NoteAdd} from "@material-ui/icons";
+import {I_TASK} from "../interfaces/TasksInterfaces";
 
 interface IProps {
 }
 
 interface IState {
     currentTextForNewTask: string
+    errorStatusCreatedTask: boolean;
 }
 
 class MyTasksComponent extends React.Component<IProps, IState>
@@ -25,7 +27,8 @@ class MyTasksComponent extends React.Component<IProps, IState>
     {
         super(props);
         this.state = {
-            currentTextForNewTask: ""
+            currentTextForNewTask: "",
+            errorStatusCreatedTask: false
         };
     }
 
@@ -35,8 +38,14 @@ class MyTasksComponent extends React.Component<IProps, IState>
 
     handleCreateNewTask()
     {
-        addTask(this.state.currentTextForNewTask);
-        this.setState({currentTextForNewTask: ""});
+        this.setState({errorStatusCreatedTask: false});
+        createTask(this.state.currentTextForNewTask)
+            .then(() => {
+                this.setState({currentTextForNewTask: ""});
+            })
+            .catch(() => {
+               this.setState({errorStatusCreatedTask: true});
+            });
     }
 
     render()
@@ -53,7 +62,7 @@ class MyTasksComponent extends React.Component<IProps, IState>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow>
+                        <TableRow style={{backgroundColor: this.state.errorStatusCreatedTask ? "gold" : "none"}}>
                             <TableCell component="th" scope="row">
                                 <TextField
                                     style={{width: "100%"}}
@@ -72,7 +81,7 @@ class MyTasksComponent extends React.Component<IProps, IState>
                                 </IconButton>
                             </TableCell>
                         </TableRow>
-                        {tasks.map((task) => (
+                        {tasks.map((task: I_TASK) => (
                             <TableRow
                                 key={"TasksListID_" + task.id}
                                 style={{backgroundColor: task.blocked === 0 ? "none" : "rgba(255,231,0,0.5)"}}

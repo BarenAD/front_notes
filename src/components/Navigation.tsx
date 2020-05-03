@@ -20,6 +20,7 @@ import {HomeOutlined, EventNoteOutlined, ExitToAppOutlined} from "@material-ui/i
 import Main from "./Main";
 import MyTasksComponent from "./MyTasksComponent";
 import {logoutUser} from "../scripts/Models/AuthorizationModel";
+import UserStore from "../store/UserStore";
 
 const drawerWidth = 240;
 
@@ -89,6 +90,9 @@ export default function Navigation() {
                                     </Route>
                                 ))}
                             </Switch>
+                        </Typography>
+                        <Typography variant="h6" noWrap style={{position: "absolute", right: "50px"}}>
+                            {UserStore.user.toUpperCase()}
                         </Typography>
                     </Toolbar>
                 </AppBar>
