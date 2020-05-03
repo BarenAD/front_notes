@@ -19,7 +19,7 @@ import {BrowserRouter as Router, Switch, Route, Link, useRouteMatch} from "react
 import {HomeOutlined, EventNoteOutlined, ExitToAppOutlined} from "@material-ui/icons";
 import Main from "./Main";
 import MyTasksComponent from "./MyTasksComponent";
-import {logoutUser} from "../scripts/UsersModel";
+import {logoutUser} from "../scripts/Models/AuthorizationModel";
 
 const drawerWidth = 240;
 

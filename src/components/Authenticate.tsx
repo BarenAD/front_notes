@@ -1,13 +1,16 @@
 import React from 'react';
 import {  Button, TextField, Typography } from '@material-ui/core';
 import {AddCircleOutline, LockOpenOutlined} from "@material-ui/icons";
-import {registerUser, loginUser} from "../scripts/UsersModel";
+import {registerUser, loginUser} from "../scripts/Models/AuthorizationModel";
 import '../sass/Authenticate.scss';
 
 interface IProps {
 }
 
 interface IState {
+    modeLogin: boolean;
+    firstName: string;
+    lastName: string;
     login: string;
     password: string;
     errorLogin: boolean;
@@ -23,6 +26,9 @@ export default class Authenticate extends  React.Component<IProps, IState>
         super(props);
 
         this.state = {
+            modeLogin: true,
+            firstName: "",
+            lastName: "",
             login: "",
             password: "",
             errorLogin: false,
@@ -30,6 +36,17 @@ export default class Authenticate extends  React.Component<IProps, IState>
             errorTextLogin: "",
             errorTextPassword: ""
         };
+    }
+
+    stateFullReset()
+    {
+        this.stateReset();
+        this.setState({
+            firstName: "",
+            lastName: "",
+            login: "",
+            password: ""
+        });
     }
 
     stateReset()
@@ -43,43 +60,57 @@ export default class Authenticate extends  React.Component<IProps, IState>
     }
 
     submitLogin(){
-        this.stateReset();
-        loginUser({
-            login: this.state.login,
-            password: this.state.password
-        }).catch(reason => {
-                if (reason.type === "login") {
-                    this.setState({
-                        errorLogin: true,
-                        errorTextLogin: reason.message
-                    })
-                } else if (reason.type === "password") {
-                    this.setState({
-                        errorPassword: true,
-                        errorTextPassword: reason.message
-                    })
-                }
-            });
+        if (!this.state.modeLogin) {
+            this.stateFullReset();
+            this.setState({modeLogin: true});
+        } else {
+            this.stateReset();
+            loginUser({
+                login: this.state.login,
+                password: this.state.password
+            })
+                .then(() => {
+                    this.stateFullReset();
+                })
+                .catch(reason => {
+                    if (reason.type === "login") {
+                        this.setState({
+                            errorLogin: true,
+                            errorTextLogin: reason.message
+                        })
+                    } else if (reason.type === "password") {
+                        this.setState({
+                            errorPassword: true,
+                            errorTextPassword: reason.message
+                        })
+                    }
+                });
+        }
     }
 
     submitRegister()
     {
-        this.stateReset();
-        registerUser({
-            login: this.state.login,
-            password: this.state.password
-        })
-            .then((status) => {
-                if (status === "success") {
-                    //редирект на главную страницу
-                }
+        if (this.state.modeLogin) {
+            this.stateFullReset();
+            this.setState({modeLogin: false});
+        } else {
+            this.stateReset();
+            registerUser({
+                first_name: this.state.firstName,
+                last_name: this.state.lastName,
+                login: this.state.login,
+                password: this.state.password
             })
-            .catch(reason => {
-                this.setState({
-                    errorLogin: true,
-                    errorTextLogin: reason
+                .then(() => {
+                    this.stateFullReset();
+                })
+                .catch(reason => {
+                    this.setState({
+                        errorLogin: true,
+                        errorTextLogin: reason.message
+                    });
                 });
-            });
+        }
     }
 
     render() {
@@ -89,9 +120,24 @@ export default class Authenticate extends  React.Component<IProps, IState>
                     Авторизация
                 </Typography>
                 <div className="auth_text_fields_container">
+                    {!this.state.modeLogin &&
+                        <div>
+                            <TextField
+                                className="auth_text_fields"
+                                label="Имя"
+                                onChange={(event) => {this.setState({firstName: event.target.value});}}
+                            />
+                            <TextField
+                                className="auth_text_fields"
+                                label="Фамилия"
+                                onChange={(event) => {this.setState({lastName: event.target.value});}}
+                            />
+                        </div>
+                    }
                     <TextField
                         className="auth_text_fields"
-                        label="Логин"
+                        label="E-mail"
+                        type={"email"}
                         error={this.state.errorLogin}
                         helperText={this.state.errorTextLogin}
                         onChange={(event) => {this.setState({login: event.target.value});}}
@@ -99,6 +145,7 @@ export default class Authenticate extends  React.Component<IProps, IState>
                     <TextField
                         className="auth_text_fields"
                         label="Пароль"
+                        type={"password"}
                         error={this.state.errorPassword}
                         helperText={this.state.errorTextPassword}
                         onChange={(event) => {this.setState({password: event.target.value});}}

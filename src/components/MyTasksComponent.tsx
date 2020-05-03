@@ -1,7 +1,7 @@
 import React from 'react';
 import {  Button, IconButton, TextField, Typography } from '@material-ui/core';
 import TasksStore from "../store/TasksStore";
-import {addTask, updateTasks, deleteTask} from "../scripts/TasksModel";
+import {addTask, updateTasks, deleteTask} from "../scripts/Models/Offline/OfTasksModel";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';

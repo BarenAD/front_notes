@@ -1,7 +1,7 @@
-import TasksStore from "../store/TasksStore";
-import UserStore from "../store/UserStore";
-import {_getDataFromLStorage} from "./BasicModel";
-import {I_TASK} from "../interfaces/TasksInterfaces";
+import TasksStore from "../../../store/TasksStore";
+import UserStore from "../../../store/UserStore";
+import {_getDataFromLStorage} from "./OfBasicModel";
+import {I_TASK} from "../../../interfaces/TasksInterfaces";
 
 const STORAGE_KEY_TASKS = "tasks";
 

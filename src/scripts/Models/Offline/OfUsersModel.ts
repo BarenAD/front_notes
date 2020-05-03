@@ -1,17 +1,9 @@
-import userStore from "../store/UserStore";
-import {_getDataFromLStorage, _addDataFromLStorage} from "./BasicModel";
+import userStore from "../../../store/UserStore";
+import {_getDataFromLStorage, _addDataFromLStorage} from "./OfBasicModel";
+import {I_USER} from "../../../interfaces/UserInterfaces";
+import {I_STATUS_AUTHORIZATION} from "../../../interfaces/AuthorizationInterfases";
 
 const STORAGE_KEY_USERS = "users";
-
-interface I_USER {
-    login: string;
-    password: string;
-}
-
-interface I_LOGIN {
-    type: string;
-    message: string;
-}
 
 export function registerUser(inUser: I_USER): Promise<string> {
     return new Promise<string>((resolve, reject) => {
@@ -23,8 +15,8 @@ export function registerUser(inUser: I_USER): Promise<string> {
     });
 }
 
-export function loginUser(inUser: I_USER): Promise<I_LOGIN> {
-    return new Promise<I_LOGIN>((resolve, reject) => {
+export function loginUser(inUser: I_USER): Promise<I_STATUS_AUTHORIZATION> {
+    return new Promise<I_STATUS_AUTHORIZATION>((resolve, reject) => {
         let users: any = _getDataFromLStorage(STORAGE_KEY_USERS);
         if (typeof users[inUser.login] === "undefined") {
             reject({
