@@ -2,7 +2,7 @@ import {I_LOCAL_STORAGE_INPUT_SET_USER} from "../../interfaces/LocalStorageInter
 import {
     KEY_LOCAL_STORAGE_AUTHORIZATION_ACCESS_TOKEN,
     KEY_LOCAL_STORAGE_AUTHORIZATION_REFRESH_TOKEN, KEY_LOCAL_STORAGE_USER_NAME
-} from "../../constants/AuthorizationConstants";
+} from "../../constants/LocalStorageConstants";
 
 export function setUserInfoForLocalStorage(inTokens: I_LOCAL_STORAGE_INPUT_SET_USER): void {
     if (inTokens.username) {

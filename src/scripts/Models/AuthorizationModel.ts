@@ -1,7 +1,7 @@
 import {
     KEY_LOCAL_STORAGE_AUTHORIZATION_ACCESS_TOKEN,
     KEY_LOCAL_STORAGE_AUTHORIZATION_REFRESH_TOKEN, KEY_LOCAL_STORAGE_USER_NAME
-} from "../../constants/AuthorizationConstants";
+} from "../../constants/LocalStorageConstants";
 import {I_LOGIN, I_REGISTRATION, I_STATUS_AUTHORIZATION, I_TYPES_TOKENS_TO_RETURN, I_RETURN_TOKENS} from "../../interfaces/AuthorizationInterfases";
 import {sendHTTPRequest} from "./HTTPWorker";
 import { BACKEND_DOMAIN_URL } from "../../constants/BasicConstants";
