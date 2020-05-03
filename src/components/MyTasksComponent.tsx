@@ -1,7 +1,14 @@
 import React from 'react';
-import {  Button, IconButton, TextField, Typography } from '@material-ui/core';
+import {IconButton, TextField, Typography } from '@material-ui/core';
 import TasksStore from "../store/TasksStore";
-import {createTask, updateTasks, deleteTask} from "../scripts/Models/TasksModel";
+import {
+    createTask,
+    updateTasks,
+    deleteTask,
+    startChangeTask,
+    stopChangeTask,
+    completedChangeTask
+} from "../scripts/Models/TasksModel";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -59,24 +66,43 @@ class MyTasksComponent extends React.Component<IProps, IState>
     handleStartChangeTask(idTask: number)
     {
         let task: I_TASK | undefined = TasksStore.getTaskById(idTask);
-        if (task) {
-            this.setState({
-                selectedChangeTaskId: idTask,
-                selectedChangeTaskText: task.text
-            }, () => {
-                this.setState({modalIsOpen: true});
-            });
+        if (task !== undefined) {
+            let textTask: string = task.text;
+            startChangeTask(task.id)
+                .then(() => {
+                    this.setState({
+                        selectedChangeTaskId: idTask,
+                        selectedChangeTaskText: textTask
+                    }, () => {
+                        this.setState({modalIsOpen: true});
+                    });
+                })
+                .catch(() => {
+                    alert("Произошла ошибка при попытке начать изменения в заметке");
+                });
         }
     }
 
     handleStopChangeTask()
     {
-        this.setState({modalIsOpen: false});
+        stopChangeTask(this.state.selectedChangeTaskId)
+            .then(() => {
+                this.setState({
+                    selectedChangeTaskId: -1,
+                    selectedChangeTaskText: ""
+                }, () => {
+                    this.setState({modalIsOpen: false});
+                });
+            })
+            .catch(() => {
+               alert("Произошла ошибка при попытке прекратить изменения в заметке");
+            });
     }
 
     render()
     {
         const {tasks} = TasksStore;
+        let currentTime = (new Date().getTime() / 1000);
         return (
             <div style={{width: "100%", height:"100%"}}>
                 <Modal
@@ -123,36 +149,64 @@ class MyTasksComponent extends React.Component<IProps, IState>
                             {tasks.map((task: I_TASK) => (
                                 <TableRow
                                     key={"TasksListID_" + task.id}
-                                    style={{backgroundColor: task.blocked === 0 ? "none" : "rgba(255,231,0,0.5)"}}
+                                    style={{backgroundColor:
+                                            task.blocked === 0 ?
+                                                (task.status ? "rgba(92,255,0,0.5)" : "none")
+                                            : "rgba(255,231,0,0.5)"}}
                                 >
                                     <TableCell component="th" scope="row">
                                         {task.text}
                                     </TableCell>
                                     <TableCell align="right">{new Date(task.dateCreate).toUTCString()}</TableCell>
                                     <TableCell align="center">
-                                        {task.blocked === 0 ?
-                                            <div>
-                                                <IconButton
-                                                    title={"выполнена"}
-                                                    onClick={() => {}}
-                                                >
-                                                    <Done/>
-                                                </IconButton>
-                                                <IconButton
-                                                    title={"редактировать"}
-                                                    onClick={() => {this.handleStartChangeTask(task.id)}}
-                                                >
-                                                    <Create/>
-                                                </IconButton>
-                                                <IconButton
-                                                    title={"удалить"}
-                                                    onClick={() => {deleteTask(task.id)}}
-                                                >
-                                                    <Delete/>
-                                                </IconButton>
-                                            </div>
+                                        {task.status ?
+                                            <Done/>
                                             :
-                                            <Block/>
+                                            <div>
+                                                {task.blocked <= 0 ?
+                                                    <div>
+                                                        <IconButton
+                                                            title={"выполнена"}
+                                                            onClick={() => {
+                                                                completedChangeTask(task.id)
+                                                            }}
+                                                        >
+                                                            <Done/>
+                                                        </IconButton>
+                                                        <IconButton
+                                                            title={"редактировать"}
+                                                            onClick={() => {
+                                                                this.handleStartChangeTask(task.id)
+                                                            }}
+                                                        >
+                                                            <Create/>
+                                                        </IconButton>
+                                                        <IconButton
+                                                            title={"удалить"}
+                                                            onClick={() => {
+                                                                deleteTask(task.id)
+                                                            }}
+                                                        >
+                                                            <Delete/>
+                                                        </IconButton>
+                                                    </div>
+                                                    :
+                                                    <div>
+                                                        {(currentTime - task.blocked) > 300 ?
+                                                            <IconButton
+                                                                title={"сбросить блокировку"}
+                                                                onClick={() => {
+                                                                    stopChangeTask(task.id)
+                                                                }}
+                                                            >
+                                                                <Schedule/>
+                                                            </IconButton>
+                                                            :
+                                                            <Block/>
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
                                         }
                                     </TableCell>
                                 </TableRow>

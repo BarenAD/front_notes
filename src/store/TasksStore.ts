@@ -15,13 +15,15 @@ class TasksStore
     updateTask(inNewTaskInfo: I_TASK): boolean {
         let index: number = this.tasks.findIndex((task: I_TASK) => (task.id === inNewTaskInfo.id));
         if (index > -1) {
-            this.tasks[index] = {
+            let newTasks = this.tasks;
+            newTasks[index] = {
                 id: this.tasks[index].id,
                 blocked: inNewTaskInfo.blocked ? inNewTaskInfo.blocked : this.tasks[index].blocked,
                 text: inNewTaskInfo.text ? inNewTaskInfo.text : this.tasks[index].text,
                 status: inNewTaskInfo.status ? inNewTaskInfo.status : this.tasks[index].status,
                 dateCreate: inNewTaskInfo.dateCreate ? inNewTaskInfo.dateCreate : this.tasks[index].dateCreate
             };
+            this.setTasks(newTasks);
             return true;
         }
         return false;

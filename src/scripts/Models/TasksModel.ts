@@ -7,6 +7,72 @@ export function updateTasks() {
     getAllTasks().then(tasks => {TasksStore.setTasks(tasks)});
 }
 
+export function completedChangeTask(taskId: number): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        let preparedBody: object = {
+            id: taskId
+        };
+        sendHTTPRequest({
+            method: "POST",
+            url: BACKEND_DOMAIN_URL + "/api/note/change/completed",
+            data: preparedBody
+        })
+            .then(response => {
+                let task: I_TASK = prepareTask(response.data);
+                TasksStore.updateTask(task);
+                resolve();
+            })
+            .catch(response => {
+                reject();
+                console.log("Ошибка изменения статуса задачи");
+            });
+    });
+}
+
+export function stopChangeTask(taskId: number): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        let preparedBody: object = {
+            id: taskId
+        };
+        sendHTTPRequest({
+            method: "POST",
+            url: BACKEND_DOMAIN_URL + "/api/note/change/stop",
+            data: preparedBody
+        })
+            .then(response => {
+                let task: I_TASK = prepareTask(response.data);
+                TasksStore.updateTask(task);
+                resolve();
+            })
+            .catch(response => {
+                reject();
+                console.log("Ошибка старта изменения задачи");
+            });
+    });
+}
+
+export function startChangeTask(taskId: number): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        let preparedBody: object = {
+            id: taskId
+        };
+        sendHTTPRequest({
+            method: "POST",
+            url: BACKEND_DOMAIN_URL + "/api/note/change/start",
+            data: preparedBody
+        })
+            .then(response => {
+                let task: I_TASK = prepareTask(response.data);
+                TasksStore.updateTask(task);
+                resolve();
+            })
+            .catch(response => {
+                reject();
+                console.log("Ошибка старта изменения задачи");
+            });
+    });
+}
+
 export function changeTask(taskId: number, text: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         let preparedBody: object = {
@@ -25,7 +91,7 @@ export function changeTask(taskId: number, text: string): Promise<void> {
             })
             .catch(response => {
                 reject();
-                console.log("Ошибка создания задачи");
+                console.log("Ошибка изменения задачи");
             });
     });
 }

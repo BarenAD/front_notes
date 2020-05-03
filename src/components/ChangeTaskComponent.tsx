@@ -1,7 +1,7 @@
 import * as React from "react";
 import "../sass/ChangeTask.scss";
 import {Cancel, Done, SaveOutlined} from "@material-ui/icons";
-import {IconButton, TextField} from "@material-ui/core";
+import {IconButton, TextField, Button} from "@material-ui/core";
 import {useState} from "react";
 import {changeTask} from "../scripts/Models/TasksModel";
 
@@ -26,7 +26,7 @@ export default function ChangeTaskComponent(inProps: I_ChangeTaskComponent) {
                 title={"закрыть"}
                 onClick={() => {inProps.handleCloseModal()}}
             >
-                <Cancel style={{color: "red", width: "50px", height: "50px"}}/>
+                <Cancel className={"ico"}/>
             </IconButton>
             <TextField
                 style={{width: "90%"}}
@@ -34,7 +34,8 @@ export default function ChangeTaskComponent(inProps: I_ChangeTaskComponent) {
                 value={newTextTask}
                 onChange={(event) => {setTextTask(event.target.value)}}
             />
-            <IconButton
+            <Button
+                className={"button_save"}
                 title={"сохранить"}
                 onClick={() => {handleSave({
                     idTask: inProps.idTask,
@@ -42,8 +43,9 @@ export default function ChangeTaskComponent(inProps: I_ChangeTaskComponent) {
                     handleCloseModal: inProps.handleCloseModal
                 })}}
             >
-                <SaveOutlined  style={{color: "green", width: "50px", height: "50px"}}/>
-            </IconButton>
+                <SaveOutlined className={"ico"}/>
+                сохранить
+            </Button>
         </div>
     );
 }
