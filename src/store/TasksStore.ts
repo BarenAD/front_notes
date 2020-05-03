@@ -15,15 +15,7 @@ class TasksStore
     updateTask(inNewTaskInfo: I_TASK): boolean {
         let index: number = this.tasks.findIndex((task: I_TASK) => (task.id === inNewTaskInfo.id));
         if (index > -1) {
-            let newTasks = this.tasks;
-            newTasks[index] = {
-                id: this.tasks[index].id,
-                blocked: inNewTaskInfo.blocked ? inNewTaskInfo.blocked : this.tasks[index].blocked,
-                text: inNewTaskInfo.text ? inNewTaskInfo.text : this.tasks[index].text,
-                status: inNewTaskInfo.status ? inNewTaskInfo.status : this.tasks[index].status,
-                dateCreate: inNewTaskInfo.dateCreate ? inNewTaskInfo.dateCreate : this.tasks[index].dateCreate
-            };
-            this.setTasks(newTasks);
+            this.tasks[index] = inNewTaskInfo;
             return true;
         }
         return false;
@@ -48,7 +40,6 @@ class TasksStore
 TasksStore = decorate(TasksStore, {
     tasks: observable,
     addTasks: action,
-    getTasks: action,
     deleteTask: action,
     getTaskById: action,
     updateTask: action,

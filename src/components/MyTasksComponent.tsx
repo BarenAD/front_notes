@@ -151,7 +151,7 @@ class MyTasksComponent extends React.Component<IProps, IState>
                                     key={"TasksListID_" + task.id}
                                     style={{backgroundColor:
                                             task.blocked === 0 ?
-                                                (task.status ? "rgba(92,255,0,0.5)" : "none")
+                                                (task.status ? "rgba(92,255,0,0.5)" : "white")
                                             : "rgba(255,231,0,0.5)"}}
                                 >
                                     <TableCell component="th" scope="row">

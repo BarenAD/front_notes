@@ -1,9 +1,9 @@
 import * as React from "react";
 import "../sass/ChangeTask.scss";
-import {Cancel, Done, SaveOutlined} from "@material-ui/icons";
+import {Cancel, SaveOutlined} from "@material-ui/icons";
 import {IconButton, TextField, Button} from "@material-ui/core";
 import {useState} from "react";
-import {changeTask} from "../scripts/Models/TasksModel";
+import {changeTask, stopChangeTask} from "../scripts/Models/TasksModel";
 
 interface I_ChangeTaskComponent {
     idTask: number;
@@ -51,11 +51,13 @@ export default function ChangeTaskComponent(inProps: I_ChangeTaskComponent) {
 }
 
 function handleSave(inProps: I_changeInputHandleSave) {
-    changeTask(inProps.idTask, inProps.newTextTask)
-        .then(() => {
-            inProps.handleCloseModal();
-        })
-        .catch(() => {
-            alert("Произошла ошибка при сохранении");
-        })
+    stopChangeTask(inProps.idTask).then(() => {
+        changeTask(inProps.idTask, inProps.newTextTask)
+            .then(() => {
+                inProps.handleCloseModal();
+            })
+            .catch(() => {
+                alert("Произошла ошибка при сохранении");
+            })
+    });
 }
