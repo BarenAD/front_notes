@@ -160,7 +160,7 @@ function prepareTask(inTask: any): I_TASK {
         id: parseInt(inTask.id),
         blocked: parseInt(inTask.blocked),
         text: inTask.body,
-        status: inTask.status !== 0,
+        status: inTask.status != 0,
         dateCreate: new Date(inTask.created_at).getTime()
     };
 }

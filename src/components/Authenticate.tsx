@@ -117,7 +117,11 @@ export default class Authenticate extends  React.Component<IProps, IState>
         return (
             <div className="auth_main_container">
                 <Typography variant="h4" className="auth_text_typography">
-                    Авторизация
+                    {this.state.modeLogin ?
+                        "Авторизация"
+                        :
+                        "Регистрация"
+                    }
                 </Typography>
                 <div className="auth_text_fields_container">
                     {!this.state.modeLogin &&
