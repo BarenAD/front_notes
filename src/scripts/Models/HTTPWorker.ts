@@ -43,7 +43,6 @@ export function sendHTTPRequest(inRequestQuery: I_REQUEST): Promise<I_RESPONSE> 
                             refreshTokens()
                                 .then(refreshResponse => {
                                     setUserInfoForLocalStorage({
-                                        username: (refreshResponse.data.first_name + " " + refreshResponse.data.last_name),
                                         access: refreshResponse.data.access_token,
                                         refresh: refreshResponse.data.refresh_token
                                     });
