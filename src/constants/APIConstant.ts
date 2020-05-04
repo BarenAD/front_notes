@@ -2,13 +2,13 @@ import {I_API_ARRAY, I_API_RESPONSE} from "../interfaces/APIInterfases";
 
 const BASIC_API_RESPONSE_EDIT_NOTE: I_API_RESPONSE = {
     200: {
-        id: "integer",
+        id: "number",
         body: "string",
-        blocked: "integer (timestamp)",
+        blocked: "number (timestamp)",
         status: "boolean",
         created_at: "string (date)",
         updated_at: "string (date)",
-        user_id: "integer"
+        user_id: "number"
     },
     500: "fail"
 };
