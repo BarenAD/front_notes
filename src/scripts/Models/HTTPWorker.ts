@@ -1,7 +1,7 @@
-import {I_REQUEST, I_RESPONSE} from "../../interfaces/RequestInterfases";
+import {I_REQUEST, I_RESPONSE} from "../../interfaces/RequestInterfaces";
 import UserStore from "../../store/UserStore";
 import {checkExistTokenAuth, getTokenFromLocalStorage} from "./AuthorizationModel";
-import {I_RETURN_TOKENS} from "../../interfaces/AuthorizationInterfases";
+import {I_RETURN_TOKENS} from "../../interfaces/AuthorizationInterfaces";
 import {BACKEND_DOMAIN_URL} from "../../constants/BasicConstants";
 import {setUserInfoForLocalStorage} from "./LocalStorageModel";
 

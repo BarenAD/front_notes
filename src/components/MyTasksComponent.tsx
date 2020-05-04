@@ -1,5 +1,5 @@
 import React from 'react';
-import {IconButton, TextField, Typography } from '@material-ui/core';
+import {IconButton, TextField } from '@material-ui/core';
 import TasksStore from "../store/TasksStore";
 import {
     createTask,
@@ -49,6 +49,9 @@ class MyTasksComponent extends React.Component<IProps, IState>
 
     componentDidMount(): void {
         updateTasks();
+        window.onfocus = () => {
+            updateTasks();
+        };
     }
 
     handleCreateNewTask()

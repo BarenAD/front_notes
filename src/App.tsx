@@ -1,7 +1,7 @@
 import React from 'react';
-import Navigation from "./components/Navigation";
-import {BrowserRouter as Router, Switch, Route, Link, useRouteMatch} from "react-router-dom";
-import Authenticate from "./components/Authenticate";
+import NavigationComponent from "./components/NavigationComponent";
+import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
+import AuthenticateComponent from "./components/AuthenticateComponent";
 import userStore from "./store/UserStore";
 import {observer} from "mobx-react";
 
@@ -13,14 +13,14 @@ function App() {
         {auth ?
             <Switch>
                 <Route exact path="/auth">
-                    <Authenticate />
+                    <AuthenticateComponent />
                 </Route>
                 <Route path="/">
-                    <Navigation />
+                    <NavigationComponent />
                 </Route>
             </Switch>
             :
-            <Authenticate />
+            <AuthenticateComponent />
         }
         </Router>
     );

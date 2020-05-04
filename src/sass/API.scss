@@ -1,0 +1,48 @@
+.api_main_container {
+  margin-bottom: 50px;
+
+  .title_API {
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: rgb(255, 11, 0) 0 0 10px;
+  }
+
+  .GET {
+    color: #0a0080;
+  }
+
+  .POST {
+    color: #d57711;
+  }
+
+  .code_response {
+    color: rgba(177, 33, 0, 0.8);
+  }
+
+  .code_200 {
+    color: green;
+  }
+
+  .string {
+    color: rgba(0, 199, 0, 0.8);
+  }
+
+  .number {
+    color: rgba(0, 199, 172, 0.9);
+  }
+
+  summary {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  details {
+    margin-top: 10px;
+    margin-left: 20px;
+    border-left: 1px solid rgba(0,0,0,0.1);
+  }
+
+  h3 {
+    margin-left: 40px;
+  }
+}

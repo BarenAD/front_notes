@@ -1,7 +1,7 @@
 import userStore from "../../../store/UserStore";
 import {_getDataFromLStorage, _addDataFromLStorage} from "./OfBasicModel";
 import {I_USER} from "../../../interfaces/UserInterfaces";
-import {I_STATUS_AUTHORIZATION} from "../../../interfaces/AuthorizationInterfases";
+import {I_STATUS_AUTHORIZATION} from "../../../interfaces/AuthorizationInterfaces";
 
 const STORAGE_KEY_USERS = "users";
 

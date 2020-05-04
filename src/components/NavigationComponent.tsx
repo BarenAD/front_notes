@@ -15,9 +15,9 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import {BrowserRouter as Router, Switch, Route, Link, useRouteMatch} from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 import {HomeOutlined, EventNoteOutlined, ExitToAppOutlined} from "@material-ui/icons";
-import Main from "./Main";
+import MainComponent from "./MainComponent";
 import MyTasksComponent from "./MyTasksComponent";
 import {logoutUser} from "../scripts/Models/AuthorizationModel";
 import UserStore from "../store/UserStore";
@@ -27,7 +27,7 @@ const drawerWidth = 240;
 const Routes: typeRoute[] = [
     {
         path: "/",
-        component: <Main/>,
+        component: <MainComponent/>,
         title: "Главная",
         exact: true,
         icon: <HomeOutlined/>
@@ -41,7 +41,7 @@ const Routes: typeRoute[] = [
     }
 ];
 
-export default function Navigation() {
+export default function NavigationComponent() {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
