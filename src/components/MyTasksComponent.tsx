@@ -150,8 +150,12 @@ class MyTasksComponent extends React.Component<IProps, IState>
             isEnableViewBlocked,
             searchQuery,
             selectedSortColumn,
-            isSortDesk
+            isSortDesk,
+            selectedChangeTaskId,
+            selectedChangeTaskText,
+            modalIsOpen
         } = this.state;
+
         if (searchQuery.length > 0) {
             tempTasks = TasksStore.searchByText(
                 isEnableViewCompleted,
@@ -173,16 +177,18 @@ class MyTasksComponent extends React.Component<IProps, IState>
         return (
             <div style={{width: "100%", height:"100%"}}>
                 <Modal
-                    open={this.state.modalIsOpen}
+                    open={modalIsOpen}
                     onClose={() => {this.handleStopChangeTask()}}
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
                 >
-                    <ChangeTaskComponent
-                        idTask={this.state.selectedChangeTaskId}
-                        textTask={this.state.selectedChangeTaskText}
-                        handleCloseModal={() => {this.handleStopChangeTask()}}
-                    />
+                    <div>
+                        <ChangeTaskComponent
+                            idTask={selectedChangeTaskId}
+                            textTask={selectedChangeTaskText}
+                            handleCloseModal={() => {this.handleStopChangeTask()}}
+                        />
+                    </div>
                 </Modal>
                 <MyTasksBarComponent
                     selectedSortColumn={selectedSortColumn}

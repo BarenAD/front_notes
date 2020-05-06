@@ -1,6 +1,5 @@
-import {action, computed, decorate, observable} from "mobx";
+import {action, decorate, observable} from "mobx";
 import {I_TASK} from "../interfaces/TasksInterfaces";
-import ScriptSort from "../scripts/ScriptSort";
 
 class TasksStore
 {
