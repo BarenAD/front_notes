@@ -69,9 +69,6 @@ export default class AuthenticateComponent extends  React.Component<IProps, ISta
                 login: this.state.login,
                 password: this.state.password
             })
-                .then(() => {
-                    this.stateFullReset();
-                })
                 .catch(reason => {
                     if (reason.type === "login") {
                         this.setState({

@@ -21,6 +21,8 @@ import {Block, Delete, Create, NoteAdd, Done, Schedule} from "@material-ui/icons
 import {I_TASK} from "../interfaces/TasksInterfaces";
 import Modal from "@material-ui/core/Modal";
 import ChangeTaskComponent from "./ChangeTaskComponent";
+import TimeStore from "../store/TimeStore";
+import MyTasksBarComponent from "./MyTasksBarComponent";
 
 interface IProps {
 }
@@ -31,6 +33,9 @@ interface IState {
     modalIsOpen: boolean;
     selectedChangeTaskId: number;
     selectedChangeTaskText: string;
+    searchQuery: string;
+    isEnableViewCompleted: boolean;
+    isEnableViewBlocked: boolean;
 }
 
 class MyTasksComponent extends React.Component<IProps, IState>
@@ -43,15 +48,20 @@ class MyTasksComponent extends React.Component<IProps, IState>
             errorStatusCreatedTask: false,
             modalIsOpen: false,
             selectedChangeTaskId: -1,
-            selectedChangeTaskText: ""
+            selectedChangeTaskText: "",
+            searchQuery: "",
+            isEnableViewCompleted: false,
+            isEnableViewBlocked: false
         };
     }
 
     componentDidMount(): void {
         updateTasks();
-        window.onfocus = () => {
-            updateTasks();
-        };
+        window.onfocus = () => updateTasks();
+    }
+
+    componentWillUnmount(): void {
+        window.onfocus = null;
     }
 
     handleCreateNewTask()
@@ -64,6 +74,24 @@ class MyTasksComponent extends React.Component<IProps, IState>
             .catch(() => {
                this.setState({errorStatusCreatedTask: true});
             });
+    }
+
+    handleChangeSearchQuery(newQuery: string)
+    {
+        this.setState({searchQuery: newQuery});
+    }
+
+    handleChangeCheckBox(key: string, newValue: boolean)
+    {
+        let isUpdate: object | null;
+        switch (key) {
+            case "viewCompleted": isUpdate = {isEnableViewCompleted: newValue}; break;
+            case "viewBlocked": isUpdate = {isEnableViewBlocked: newValue}; break;
+            default: isUpdate = null; break;
+        }
+        if (isUpdate) {
+            this.setState(isUpdate);
+        }
     }
 
     handleStartChangeTask(idTask: number)
@@ -104,8 +132,27 @@ class MyTasksComponent extends React.Component<IProps, IState>
 
     render()
     {
-        const {tasks} = TasksStore;
-        let currentTime = (new Date().getTime() / 1000);
+        const timeIntervalBlocked = 300; //Интервал блокировки с момента начала редактирования в секундах
+        let tempTasks;
+        const {
+            isEnableViewCompleted,
+            isEnableViewBlocked,
+            searchQuery
+        } = this.state;
+        if (searchQuery.length > 0) {
+            tempTasks = TasksStore.searchByText(
+                isEnableViewCompleted,
+                isEnableViewBlocked,
+                searchQuery
+            );
+        } else {
+            tempTasks = TasksStore.getTasks(
+                isEnableViewCompleted,
+                isEnableViewBlocked
+            );
+        }
+        const tasks = tempTasks;
+        const currentTime = TimeStore.getTimeAccordingToSyncDifference;
         return (
             <div style={{width: "100%", height:"100%"}}>
                 <Modal
@@ -120,6 +167,12 @@ class MyTasksComponent extends React.Component<IProps, IState>
                         handleCloseModal={() => {this.handleStopChangeTask()}}
                     />
                 </Modal>
+                <MyTasksBarComponent
+                    checkboxViewCompleted={this.state.isEnableViewCompleted}
+                    checkboxViewBlocked={this.state.isEnableViewBlocked}
+                    handleUpdateSearchQuery={(text: string) => {this.handleChangeSearchQuery(text)}}
+                    handleUpdateCheckbox={(key: string, newValue: boolean) => this.handleChangeCheckBox(key, newValue)}
+                />
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
                         <TableHead>
@@ -195,7 +248,7 @@ class MyTasksComponent extends React.Component<IProps, IState>
                                                     </div>
                                                     :
                                                     <div>
-                                                        {(currentTime - task.blocked) > 300 ?
+                                                        {(currentTime.timeServer - task.blocked) > timeIntervalBlocked ?
                                                             <IconButton
                                                                 title={"сбросить блокировку"}
                                                                 onClick={() => {

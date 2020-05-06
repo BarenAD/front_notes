@@ -41,6 +41,8 @@ export const API_DOC: I_API_ARRAY = {
             },
             response: {
                 200: {
+                    first_name: "string",
+                    last_name: "string",
                     access_token: "string",
                     refresh_token: "string"
                 },
@@ -69,6 +71,33 @@ export const API_DOC: I_API_ARRAY = {
         }
     ],
     NOTES: [
+        {
+            method: "GET",
+            uri: "api/note/getAll",
+            headers: {
+                Authorization: "'Bearer ' + AccessToken"
+            },
+            response: [
+                {
+                    id: "number",
+                    body: "string",
+                    blocked: "number (timestamp)",
+                    status: "boolean",
+                    created_at: "string (date)",
+                    updated_at: "string (date)",
+                    user_id: "number"
+                },
+                {
+                    id: "number",
+                    body: "string",
+                    blocked: "number (timestamp)",
+                    status: "boolean",
+                    created_at: "string (date)",
+                    updated_at: "string (date)",
+                    user_id: "number"
+                }
+            ]
+        },
         {
             method: "POST",
             uri: "api/note/create",

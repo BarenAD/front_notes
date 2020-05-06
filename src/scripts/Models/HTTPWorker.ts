@@ -4,6 +4,7 @@ import {checkExistTokenAuth, getTokenFromLocalStorage} from "./AuthorizationMode
 import {I_RETURN_TOKENS} from "../../interfaces/AuthorizationInterfaces";
 import {BACKEND_DOMAIN_URL} from "../../constants/BasicConstants";
 import {setUserInfoForLocalStorage} from "./LocalStorageModel";
+import TimeStore from "../../store/TimeStore";
 
 export function sendHTTPRequest(inRequestQuery: I_REQUEST): Promise<I_RESPONSE> {
     let Init: RequestInit = {
@@ -36,6 +37,9 @@ export function sendHTTPRequest(inRequestQuery: I_REQUEST): Promise<I_RESPONSE> 
                         data: data
                     };
                     if (response.ok) {
+                        let stringTimeFromServer: string | null = response.headers.get('expires');
+                        let timestampSecFromServer: number = stringTimeFromServer ? parseInt(stringTimeFromServer) : 0;
+                        TimeStore.synchronizeTime(timestampSecFromServer);
                         resolve(preparedResponse);
                     } else {
                         if (response.status === 402) {

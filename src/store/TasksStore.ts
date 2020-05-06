@@ -1,4 +1,4 @@
-import {action, decorate, observable} from "mobx";
+import {action, computed, decorate, observable} from "mobx";
 import {I_TASK} from "../interfaces/TasksInterfaces";
 
 class TasksStore
@@ -10,6 +10,14 @@ class TasksStore
 
     setTasks(payload: I_TASK[]) {
         this.tasks = payload;
+    }
+
+    getTasks(isCompleted: boolean, isBlocked: boolean): I_TASK[] {
+        return this.tasks.filter(task => (
+            (isCompleted ? true : !task.status)
+            &&
+            (isBlocked ? true : task.blocked === 0)
+        ));
     }
 
     updateTask(inNewTaskInfo: I_TASK): boolean {
@@ -34,11 +42,17 @@ class TasksStore
     getTaskById(inId: number): I_TASK | undefined {
         return this.tasks.find((task: I_TASK) => (task.id === inId));
     }
+
+    searchByText(isCompleted: boolean, isBlocked: boolean, inText: string): I_TASK[] {
+        return this.getTasks(isCompleted, isBlocked)
+                .filter(task => task.text.toLowerCase().includes(inText.toLowerCase()));
+    }
 }
 
 // @ts-ignore
 TasksStore = decorate(TasksStore, {
     tasks: observable,
+    setTasks: action,
     addTasks: action,
     deleteTask: action,
     getTaskById: action,
