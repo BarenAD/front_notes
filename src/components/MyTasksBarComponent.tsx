@@ -1,4 +1,5 @@
-import {TextField, Checkbox, Card} from "@material-ui/core";
+import {TextField, Checkbox, Card, InputLabel, MenuItem, FormControl, Select} from "@material-ui/core";
+import {ArrowDownward} from "@material-ui/icons";
 import React from "react";
 
 interface IState {
@@ -10,6 +11,9 @@ interface IProps {
     checkboxViewCompleted: boolean;
     handleUpdateSearchQuery: any;
     handleUpdateCheckbox: any;
+    selectedSortColumn: string;
+    isSortDesk: boolean;
+    handleChangeSelectedColumnSort: any;
 }
 
 export default class MyTasksBarComponent extends React.Component<IProps, IState>
@@ -37,7 +41,10 @@ export default class MyTasksBarComponent extends React.Component<IProps, IState>
         const {
             checkboxViewCompleted,
             checkboxViewBlocked,
-            handleUpdateCheckbox
+            handleUpdateCheckbox,
+            selectedSortColumn,
+            isSortDesk,
+            handleChangeSelectedColumnSort
         } = this.props;
         return (
             <Card
@@ -50,6 +57,34 @@ export default class MyTasksBarComponent extends React.Component<IProps, IState>
                     alignItems: "center"
                 }}
             >
+                <div style={{display: "flex",alignItems: "center"}}>
+                    <FormControl style={{width: "150px"}}>
+                        <InputLabel id="selectSortedColumn">Сортировка</InputLabel>
+                        <Select
+                            labelId="selectSortedColumn"
+                            value={selectedSortColumn}
+                            id={"IDselectSortedColumn"}
+                            onChange={(event) => {handleChangeSelectedColumnSort(event.target.value)}}
+                        >
+                            <MenuItem value={"id"}>ID</MenuItem>
+                            <MenuItem value={"text"}>Текст(длина)</MenuItem>
+                            <MenuItem value={"blocked"}>Заблокированные</MenuItem>
+                            <MenuItem value={"status"}>Статус</MenuItem>
+                            <MenuItem value={"dateCreate"}>Дата создания</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <div title={isSortDesk ? "Сортировать по убыванию" : "Сортировать по возрастанию"}>
+                        <ArrowDownward
+                            onClick={() => {handleUpdateCheckbox("isSortDesk", !isSortDesk)}}
+                            style={{
+                                marginLeft: "10px",
+                                cursor: "pointer",
+                                transform:  isSortDesk ? "" : "rotate(180deg)",
+                                transition: "transform 0.5s"
+                            }}
+                        />
+                    </div>
+                </div>
                 <TextField
                     style={{width: "300px"}}
                     label="поиск"

@@ -1,6 +1,7 @@
 import React from 'react';
 import {IconButton, TextField } from '@material-ui/core';
 import TasksStore from "../store/TasksStore";
+
 import {
     createTask,
     updateTasks,
@@ -36,6 +37,8 @@ interface IState {
     searchQuery: string;
     isEnableViewCompleted: boolean;
     isEnableViewBlocked: boolean;
+    selectedSortColumn: string;
+    isSortDesk: boolean;
 }
 
 class MyTasksComponent extends React.Component<IProps, IState>
@@ -51,7 +54,9 @@ class MyTasksComponent extends React.Component<IProps, IState>
             selectedChangeTaskText: "",
             searchQuery: "",
             isEnableViewCompleted: false,
-            isEnableViewBlocked: false
+            isEnableViewBlocked: false,
+            selectedSortColumn: "id",
+            isSortDesk: true
         };
     }
 
@@ -81,12 +86,18 @@ class MyTasksComponent extends React.Component<IProps, IState>
         this.setState({searchQuery: newQuery});
     }
 
+    handleChangeSelectedColumnSort(newColumn: string)
+    {
+        this.setState({selectedSortColumn: newColumn});
+    }
+
     handleChangeCheckBox(key: string, newValue: boolean)
     {
         let isUpdate: object | null;
         switch (key) {
             case "viewCompleted": isUpdate = {isEnableViewCompleted: newValue}; break;
             case "viewBlocked": isUpdate = {isEnableViewBlocked: newValue}; break;
+            case "isSortDesk": isUpdate = {isSortDesk: newValue}; break;
             default: isUpdate = null; break;
         }
         if (isUpdate) {
@@ -137,18 +148,24 @@ class MyTasksComponent extends React.Component<IProps, IState>
         const {
             isEnableViewCompleted,
             isEnableViewBlocked,
-            searchQuery
+            searchQuery,
+            selectedSortColumn,
+            isSortDesk
         } = this.state;
         if (searchQuery.length > 0) {
             tempTasks = TasksStore.searchByText(
                 isEnableViewCompleted,
                 isEnableViewBlocked,
-                searchQuery
+                searchQuery,
+                selectedSortColumn,
+                isSortDesk
             );
         } else {
             tempTasks = TasksStore.getTasks(
                 isEnableViewCompleted,
-                isEnableViewBlocked
+                isEnableViewBlocked,
+                selectedSortColumn,
+                isSortDesk
             );
         }
         const tasks = tempTasks;
@@ -168,10 +185,13 @@ class MyTasksComponent extends React.Component<IProps, IState>
                     />
                 </Modal>
                 <MyTasksBarComponent
-                    checkboxViewCompleted={this.state.isEnableViewCompleted}
-                    checkboxViewBlocked={this.state.isEnableViewBlocked}
+                    selectedSortColumn={selectedSortColumn}
+                    isSortDesk={isSortDesk}
+                    checkboxViewCompleted={isEnableViewCompleted}
+                    checkboxViewBlocked={isEnableViewBlocked}
                     handleUpdateSearchQuery={(text: string) => {this.handleChangeSearchQuery(text)}}
                     handleUpdateCheckbox={(key: string, newValue: boolean) => this.handleChangeCheckBox(key, newValue)}
+                    handleChangeSelectedColumnSort={(column: string) => {this.handleChangeSelectedColumnSort(column)}}
                 />
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">

@@ -1,5 +1,6 @@
 import {action, computed, decorate, observable} from "mobx";
 import {I_TASK} from "../interfaces/TasksInterfaces";
+import ScriptSort from "../scripts/ScriptSort";
 
 class TasksStore
 {
@@ -12,12 +13,45 @@ class TasksStore
         this.tasks = payload;
     }
 
-    getTasks(isCompleted: boolean, isBlocked: boolean): I_TASK[] {
-        return this.tasks.filter(task => (
-            (isCompleted ? true : !task.status)
-            &&
-            (isBlocked ? true : task.blocked === 0)
-        ));
+    getTasks(isCompleted: boolean, isBlocked: boolean, sortColumn: string, isDesk: boolean): I_TASK[] {
+        let newTasks: I_TASK[] = this.tasks.slice();
+        if (newTasks.length > 0) {
+            // @ts-ignore
+            switch (typeof newTasks[0][sortColumn]) {
+                case "number":
+                    newTasks = isDesk ?
+                        newTasks.sort((a: any, b: any) => compareNumbers(a[sortColumn], b[sortColumn]))
+                        :
+                        newTasks.sort((b: any, a: any) => compareNumbers(a[sortColumn], b[sortColumn]));
+                    break;
+
+                case "string":
+                    newTasks = isDesk ?
+                        newTasks.sort((a: any, b: any) => compareString(a[sortColumn], b[sortColumn]))
+                        :
+                        newTasks.sort((b: any, a: any) => compareString(a[sortColumn], b[sortColumn]));
+                    break;
+
+                case "boolean":
+                    newTasks = isDesk ?
+                        newTasks.sort((a: any, b: any) => compareBoolean(a[sortColumn], b[sortColumn]))
+                        :
+                        newTasks.sort((b: any, a: any) => compareBoolean(a[sortColumn], b[sortColumn]));
+                    break;
+            }
+
+            return newTasks.filter((task: I_TASK) => (
+                (isCompleted ? true : !task.status)
+                &&
+                (isBlocked ? true : task.blocked === 0)
+            ));
+        }
+        return [];
+    }
+
+    searchByText(isCompleted: boolean, isBlocked: boolean, inText: string, sortColumn: string, isDesk: boolean): I_TASK[] {
+        return this.getTasks(isCompleted, isBlocked, sortColumn, isDesk)
+            .filter(task => task.text.toLowerCase().includes(inText.toLowerCase()));
     }
 
     updateTask(inNewTaskInfo: I_TASK): boolean {
@@ -42,11 +76,6 @@ class TasksStore
     getTaskById(inId: number): I_TASK | undefined {
         return this.tasks.find((task: I_TASK) => (task.id === inId));
     }
-
-    searchByText(isCompleted: boolean, isBlocked: boolean, inText: string): I_TASK[] {
-        return this.getTasks(isCompleted, isBlocked)
-                .filter(task => task.text.toLowerCase().includes(inText.toLowerCase()));
-    }
 }
 
 // @ts-ignore
@@ -55,8 +84,29 @@ TasksStore = decorate(TasksStore, {
     setTasks: action,
     addTasks: action,
     deleteTask: action,
-    getTaskById: action,
     updateTask: action,
 });
 
 export default new TasksStore();
+
+function compareString(a: string, b: string) {
+    if (a.length > b.length) {
+        return 1;
+    } else if (a.length < b.length) {
+        return -1;
+    }
+    return 0;
+}
+
+function compareNumbers(a: number, b: number) {
+    return a - b;
+}
+
+function compareBoolean(a: boolean, b: boolean) {
+    if (a && !b) {
+        return 1;
+    } else if (!a && b) {
+        return -1;
+    }
+    return 0;
+}
