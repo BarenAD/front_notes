@@ -57,7 +57,7 @@ export function registerUser(inData: I_REGISTRATION): Promise<I_STATUS_AUTHORIZA
         })
             .then(response => {
                 setUserInfoForLocalStorage({
-                    username: (response.data.first_name + " " + response.data.last_name),
+                    username: (inData.first_name + " " + inData.last_name),
                     access: response.data.access_token,
                     refresh: response.data.refresh_token
                 });
