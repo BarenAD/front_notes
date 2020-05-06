@@ -1,1 +1,1 @@
-export const BACKEND_DOMAIN_URL = "https://back.websecurity.barenad.info";
+export const BACKEND_DOMAIN_URL = "https://notes.barenad.info/";
