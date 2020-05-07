@@ -209,7 +209,7 @@ class MyTasksComponent extends React.Component<IProps, IState>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow style={{backgroundColor: this.state.errorStatusCreatedTask ? "gold" : "none"}}>
+                            <TableRow style={{backgroundColor: this.state.errorStatusCreatedTask ? "gold" : "white"}}>
                                 <TableCell component="th" scope="row">
                                     <TextField
                                         style={{width: "100%"}}

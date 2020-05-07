@@ -61,7 +61,6 @@ export default class AuthenticateComponent extends  React.Component<IProps, ISta
 
     submitLogin(){
         if (!this.state.modeLogin) {
-            this.stateFullReset();
             this.setState({modeLogin: true});
         } else {
             this.stateReset();
@@ -88,7 +87,6 @@ export default class AuthenticateComponent extends  React.Component<IProps, ISta
     submitRegister()
     {
         if (this.state.modeLogin) {
-            this.stateFullReset();
             this.setState({modeLogin: false});
         } else {
             this.stateReset();
